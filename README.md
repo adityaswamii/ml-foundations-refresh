@@ -19,25 +19,6 @@ A granular tracker bridging university-level data science foundations with produ
 
 ---
 
-## ⏱️ Rough Timeline
-
-| Days | Focus | Hours |
-| :--- | :--- | :---: |
-| **Day 1** | Production ML first — deployment, drift, monitoring, continual learning | 7h |
-| **Day 2** | Module 2 stat gaps → Module 1 SQL basics & intermediate | 7h |
-| **Day 3** | Module 1 advanced SQL (CTEs, window functions) → practice problems | 7h |
-| **Day 4** | Module 3 feature engineering → supervised learning deep dive | 7h |
-| **Day 5** | Module 3 unsupervised learning → clustering → anomaly detection | 7h |
-| **Day 6** | Module 3 time series — components, stationarity, ACF/PACF | 7h |
-| **Day 7** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project | 7h |
-| **Day 8** | Module 4 transformer architecture → RAG pipelines | 7h |
-| **Day 9** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration | 7h |
-| **Day 10** | Module 4 safety & evaluation → wrap-up, deferred topics, review | 7h |
-
-> Production ML is Day 1 because it reframes everything that follows. Understanding how models are deployed, monitored, and maintained in the real world changes how you read every algorithm and technique in Modules 1–4.
-
----
-
 ## 🗺️ Master ML Tracker
 
 <!--*Legend: ⬜ Not Started | 🟡 Needs Review | ✅ Completed & Mastered*-->
@@ -199,6 +180,25 @@ A granular tracker bridging university-level data science foundations with produ
 | LoRA & QLoRA | [Sebastian Raschka — LoRA explained](https://sebastianraschka.com/blog/2023/llm-finetuning-lora.html) |
 | LangChain agents | [LangChain — Quickstart](https://python.langchain.com/docs/get_started/quickstart) |
 | RAG evaluation | [RAGAS](https://docs.ragas.io/en/latest/) |
+
+---
+
+## ⏱️ Rough Timeline
+
+| Days | Focus | Hours |
+| :--- | :--- | :---: |
+| **Day 1** | Production ML first — deployment, drift, monitoring, continual learning | 7h |
+| **Day 2** | Module 2 stat gaps → Module 1 SQL basics & intermediate | 7h |
+| **Day 3** | Module 1 advanced SQL (CTEs, window functions) → practice problems | 7h |
+| **Day 4** | Module 3 feature engineering → supervised learning deep dive | 7h |
+| **Day 5** | Module 3 unsupervised learning → clustering → anomaly detection | 7h |
+| **Day 6** | Module 3 time series — components, stationarity, ACF/PACF | 7h |
+| **Day 7** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project | 7h |
+| **Day 8** | Module 4 transformer architecture → RAG pipelines | 7h |
+| **Day 9** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration | 7h |
+| **Day 10** | Module 4 safety & evaluation → wrap-up, deferred topics, review | 7h |
+
+<!-- > Production ML is Day 1 because it reframes everything that follows. Understanding how models are deployed, monitored, and maintained in the real world changes how you read every algorithm and technique in Modules 1–4. -->
 
 ---
 
