@@ -147,8 +147,9 @@ A granular tracker bridging university-level data science foundations with produ
 ### Production ML
 | Topic | Resource |
 | :--- | :--- |
-| Deployment, drift & monitoring | [Chip Huyen — DMLS Ch. 7, 8, 9 (free summaries)](https://github.com/chiphuyen/dmls-book/blob/main/summary.md) |
+| Deployment, drift & monitoring | [Chip Huyen — DMLS Ch. 6, 7, 8, 9 (free summaries)](https://github.com/serodriguez68/designing-ml-systems-summary) |
 | Monitoring in practice | [Evidently AI — ML Monitoring Guide](https://www.evidentlyai.com/ml-in-production/model-monitoring) |
+| Airbnb Case Study | [Using Machine Learning to Predict Value of Homes on Airbnb](https://medium.com/airbnb-engineering/using-machine-learning-to-predict-value-of-homes-on-airbnb-9272d3d4739d) |
 
 ### Module 1 — SQL
 | Topic | Resource |
@@ -185,18 +186,18 @@ A granular tracker bridging university-level data science foundations with produ
 
 ## ⏱️ Rough Timeline
 
-| Days | Focus | Hours |
-| :--- | :--- | :---: |
-| **Day 1** | Production ML first — deployment, drift, monitoring, continual learning | 7h |
-| **Day 2** | Module 2 stat gaps → Module 1 SQL basics & intermediate | 7h |
-| **Day 3** | Module 1 advanced SQL (CTEs, window functions) → practice problems | 7h |
-| **Day 4** | Module 3 feature engineering → supervised learning deep dive | 7h |
-| **Day 5** | Module 3 unsupervised learning → clustering → anomaly detection | 7h |
-| **Day 6** | Module 3 time series — components, stationarity, ACF/PACF | 7h |
-| **Day 7** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project | 7h |
-| **Day 8** | Module 4 transformer architecture → RAG pipelines | 7h |
-| **Day 9** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration | 7h |
-| **Day 10** | Module 4 safety & evaluation → wrap-up, deferred topics, review | 7h |
+| Days | Focus |  
+| :--- | :--- |  
+| **Day 1** | Production ML first -> Case Study & DMLS |  
+| **Day 2** | DMLS & Module 2 stat gaps |  
+| **Day 3** | Module 1 advanced SQL (CTEs, window functions) → practice problems |  
+| **Day 4** | Module 3 feature engineering → supervised learning deep dive |  
+| **Day 5** | Module 3 unsupervised learning → clustering → anomaly detection |  
+| **Day 6** | Module 3 time series — components, stationarity, ACF/PACF |  
+| **Day 7** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project |  
+| **Day 8** | Module 4 transformer architecture → RAG pipelines |  
+| **Day 9** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration |  
+| **Day 10** | Module 4 safety & evaluation → wrap-up, deferred topics, review |  
 
 <!-- > Production ML is Day 1 because it reframes everything that follows. Understanding how models are deployed, monitored, and maintained in the real world changes how you read every algorithm and technique in Modules 1–4. -->
 
@@ -217,18 +218,23 @@ A granular tracker bridging university-level data science foundations with produ
 ### Day 1: 18/06
 * **Focus:**
   Complete setup with timeline
+  Basic ML review
+  airbnb case study
   Production ML first — deployment, drift, monitoring, continual learning
 * **Completed Micro-topics:**
-  Setup completed.
+  Setup completed. 
+  Basic ML review, airbnb case study notes in module-3.md
+  Started DMLS
 * **Blockers/Insights encountered:**
-
+  Ran thru the entire ml production process in theory (airbnb case study), learned the questions we need to be asking for productionization of code. 
 ---
 
 ### Day 2: 19/06
 * **Focus:**
-
+  DMLS chapters 6-9
+  Module 2 stats & probability refresh
 * **Completed Micro-topics:**
-
+  
 * **Blockers/Insights encountered:**
 
 ---
