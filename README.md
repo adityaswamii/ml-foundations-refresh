@@ -189,7 +189,7 @@ A granular tracker bridging university-level data science foundations with produ
 | Days | Focus |  
 | :--- | :--- |  
 | **Day 1** | Production ML first -> Case Study & DMLS |  
-| **Day 2** | DMLS & Module 2 stat gaps |  
+| **Day 2** | Production ML -> DMLS, Implementation. Module 2 stat gaps |  
 | **Day 3** | Module 1 advanced SQL (CTEs, window functions) → practice problems |  
 | **Day 4** | Module 3 feature engineering → supervised learning deep dive |  
 | **Day 5** | Module 3 unsupervised learning → clustering → anomaly detection |  
@@ -232,6 +232,7 @@ A granular tracker bridging university-level data science foundations with produ
 ### Day 2: 19/06
 * **Focus:**
   DMLS chapters 6-9
+  Evidently AI ML Monitoring Guide
   Module 2 stats & probability refresh
 * **Completed Micro-topics:**
   
