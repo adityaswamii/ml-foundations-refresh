@@ -17,8 +17,8 @@ Parameters are values for the model function that are learned during the trainin
 Model Selection isnot just selecting function. Also involves picking right objective function and learning procedure  
     while developing model, if time permits, you should experiment with diff objective funcs to see how model behaviour changes globally or for subsets of data  
     learning procedures (eg. gradient descent) and optimizers (eg. momentum/adam/rmsprop)  
-    the set of params that perform well on training data aren't always the best, a diff set might perform better in production  
-    
+    the set of params that perform well on training data aren't always the best, a diff set might perform better in production      
+
 
 ### Airbnb case study
 
@@ -105,4 +105,203 @@ Tracking model performance over time, leveraging elastic compute environment for
 
 ### DMLS CH6
 
-##### 
+#### Criteria to select ML models
+
+model must be suitable for the problem 
+eg. fraud detection system -> anomly detection problem -> models used for this kind of problem are KNNs, isolation forest, clustering, and neural network
+eg.2 NLP text claassification -> naive-bayes, log reg, rnns, BERT or GPT
+
+start w simpler models, make it better by optimizing objective funcs, hyper-paramters search, feature eng, ensembles
+move to complex models once u reach the limit of a simple one
+
+training metrics not everything -> consider amt of data needed, computational needs, training time, latency, interpretability etc. 
+
+USE SIMPLER SOLUTION (state-of-the-art models dont always hold up in prod)
+
+neural networks can be used alongside classical models eg. extracting features, ensembles, embeddings
+
+START SIMPLE - validate framing early, easier to understand, baseline for comparison
+simple =/= low-effort (sometimes u want a low-effort, complex model as starting pt)
+
+best model now vs best model 2 months from now. model performance saturates - simple models saturate faster. take into account future improvement potential
+
+tradeoffs -> false positives vs false negatives, compute vs performance, latency vs performance, interpretability vs performance
+
+understand assumptions!!!
+
+
+#### Ensembles - Bagging vs Boosting vs Stacking
+
+multiple base learners are trained and each of them outputs a prediction, the final pred is derived using majority vote
+harder to deploy/maintain - useful for tasks where small performance boosts can lead to huge financial gain
+
+less correlation bw base learners -> better. common to use diff models for an ensemble eg. tranformer, rnn & xgboost tree can all be part of one ensemble. use odd no of models to avoid voting ties 
+
+##### Bagging ->
+bootstrap data (sample w replacement) to create diff training data sets and train a diff model on each set. 
+improves stability of unstbale methods, accuracy & reduces variance (helps avoid overfitting) 
+! can mildly degrade performance in stable methods like knn
+
+##### Boosting->
+Train the first weak classifier on the original dataset, samples are then reweighted acc to how well they are classified. misclassified ones have higher weights. 
+Train a 2nd classifier w the reweighted samples. Reweight samples again. Repeat for n iterations.  
+The final strong classifier is a weighted combination of all the existing classifiers. Classifiers with smaller training errors have higher weights.
+eg. Gradient Boosted Machines (GBMs), XGBoost, LightGBM
+
+##### Stacking ->
+Multiple base learners make prediction on k-fold CV data.
+The final prediction uses meta-learner which combines the predictions from the base ones. It may use the original features as well to guide its predictions. 
+
+
+#### Experiment Tracking, Versioning, Debugging
+
+##### Tracking
+expmt tracking - process of tracking progress and result of an exp
+versioning- process of logging all the config params of an exp for replicability
+helps w reproducibility but does not ensure it
+
+what to track / babysit -> loss curve of train & each of the eval splits, model performance metrics (acc, f1), speed, system performance metrics(cpu/gpu usage), values over time of imp parameters/hyperparams
+
+theory vs practice - tracking everything u can may sound good but might be overwhelming/distracting irl 
+
+##### Versioning 
+ML systems -> part code, part data. version both
+Challenges -> data is larger than code, cannot use code versioning tools. 
+data versioning is still not optimized, do we track every change or only checksum. Tools like DVC are used in prod 
+
+##### Debugging
+
+challenges: 
+- models fail silently. predictions are made, but wrong
+- validating if a bug is fixed is slow, may involve re-training and re-evaluting entire model 
+- many possible points of failure
+
+no scientific approach to debugging ML
+
+some techniques:
+1. start simple and gradually add more components. let's u see if ur additions are helping/hurting performance. do NOT just clone an open source sota model and plug in your own data, low chance of working and v difficult to debug
+2. overfit a single batch. after getting a simple implementation, try to get a v high accuracy on a small batch of data. if not possible, something might be wrong
+3. set a rnadom seed. using a consistent random sed across experiments helps keep things comparable 
+4. more techniques: [A Recipe for Training Neural Networks - Andrej Karpathy](http://karpathy.github.io/2019/04/25/recipe/)
+
+#### Distributed Training
+
+when data doesn't fit into memory, you need to utilize multiple machines in parallel to train your models
+
+##### Data Parallelism
+most common - split your data across multiple machines, train your model on all of them and accumulate gradients
+problems:
+1. sync vs async gradient descent -> in gd, you use mini-batches to avoid processing the entire dataset at every step. when using parallel training, you furhter split those into mini-mini-batches. how to update weights and biases after processing mini-mini-batch?
+    - sync-SGD: wait for all machines to finish processing their mmbatches before accumulating gradients. A main node updates the wegihts from all the gradients, and then all assisting nodes download the new model weights from the main to start processing the next min-batch.  
+    Pros: converges faster. Cons: One slow node will slow down the full system. 
+    - async-SGD: machines send their gradients to the main node as soon as they finish processing their mmbatch. the main node immediately updates the weights without waiting for other assisting nodes. assisting nodes download the updated version of the model immediately and get to work on the next mmbatch.  
+    Pros: no system slowdown. Cons: in theory needs more steps to converge due to gradient staleness
+2. large no of assisting nodes = large batch sizes ->  
+    100 assisting gpu nodes * each miniminibatch of 10k samples = mini-batch size of 1M
+    large minibatches typically cause models to train faster. in theory, if you 2x the minibatch size you should lo 2x the LR. however, in practice:
+    - incr LR too much may cause unstable convergence
+    - incr batch size past a certain point brings diminishing returns
+    - incr batch size while keepnig LR and no. of epochs constant can lower accuracy
+    - the selection of batch szie and LR hyperparams is an art more than a science. [Weights & Biases vid](https://www.youtube.com/watch?v=ZBVwnoVIvZk)
+
+##### Model Parallelism 
+in this, diff components of ur model are trained on diff machines. NOT mutually exclusve w data parallelism, but tough to setup both simultaneously.  
+![Hybrid Data and Model Parallelism Arrangement](image-1.png)  
+Hybrid Data and Model Parallelism Arrangement.  
+
+##### Pipeline Parallelism 
+Split up the model into serial components that run on diff machines and then stagger the feeding of miniminibatches. 
+![pipeline parallelism](image-2.png)
+
+#### Auto ML
+the idea of using computation to solve chore tasks done by ml engineers 
+
+##### Soft Auto ML - Hyperparam tuning
+- using automl to find the optimal set of hyperparams for a model within a given search space
+- has been shown that weaker models w well-tuned parameters can outperform stronger models 
+- utilities for auto hyperparam tuning: auto-sklearn, keras tune
+- methods for " : random search, grid search, bayesian optimization
+- important hyperparams need more consideration when tuning
+- NEVER use test splpit to tune hyperparams. choose params based on validation set.
+
+indepth guide to hyperparam tuning [AutoML Book Ch1](https://www.automl.org/wp-content/uploads/2019/05/AutoML_Book_Chapter1.pdf)
+
+##### Hard Auto ML - Architecture Search and LEarned Optimizers
+- used mainly in research
+- the architectures from architecture search research and the optimizers from learned optimizers research can be general enough to be used in many different tasks
+- architecture search (aka NAS) -> using an algo to change the architectural params of ur neural network (no/size oflayer) to find the optimal architecture for your model. 3 components: search space (depends on base architecture), performance estimation strategy (must be cheap), search strategy (reinforcement learniing/ evolutionary algos).
+- learned optimizers -> replacing the manually defined GD optimizer function and its hyperparams with a NN and learning its hyperparams. meta-train NNs using learning tasks as training data to come up w generalizable nn optimizer function that can be used off the shelf. some optimizers can [train themselves](https://www.youtube.com/watch?v=3baFTP0uYOc)
+
+
+#### Offline Evaluation - Baselines, Evaluation Methods
+how to evaluate ur models for deployment
+baselines - need something to compare against
+evaluation methods - method beyond j ml metrics (may come from the business end). ideally u want the same eval methods in development and in production. u may be able to use natural labels to measure performance, if lucky. when matching evals not possible, u need to use extensive monitoring in prod
+
+##### Baselines
+- random baseline - generate a model that produces a pred following a specific random distribution (can be uniform distribution or the tasjs' label distribution)
+- simple heuristic - " makes pred using simple heuristics such as predict most popular, recommend by no of votes
+- zero rule baseline - always predict the most common class. if above 70% ur model needs to be much better in order to be justifiable
+- human baseline - use human performance/acc as baseline
+- existing solution
+
+###### eval methods 
+need to ensure model robustness, fairness, calibration (beyond ml metrics like f1, acc)  
+
+robustness -> perturbation tests  
+- add noise to samples in test set to see how much model performance is affected
+- more sensitive to noise -> harder to maintain, more vulnerable
+
+fairness -> invariance tests
+- changing sensitive info such as race/gender should NOT lead to changes in the prediction. to eliminate this at the root, you should exclude sensitive information features from training altogether
+
+sanity checks  
+- discretional expectation tests - certain changes in the data should change the prediction in a predictable way eg. increasing area of home should increase pred value of property  
+- confidence measurement - if the model is unsure, then it should abstain from giving recommendation. defining threshold for confidence, and deciding what to do w udnerconfident predictions is part of confidence measurement
+
+calibration
+- if a model labels 100 images with a 0.6 probability of being a cat, then approx 60 of those images should be cats. if there are 90 cats in reality then the model is uncalibrated. 
+- need to be able to treat the model's (0,1) outputs as probabilities. 
+- also shows better model modularity (using the output of a model as a feature for a downstream model) if an upstream model is uncalibrated, then all belwo it need to be retrained
+- often done in post processing (Platt Scaling in `sklearn.calibration.CalibratedClassifierCV, nn calibration w temperature scaling) [Google blog post on calibration](https://www.unofficialgoogledatascience.com/2021/04/why-model-calibration-matters-and-how.html)  
+
+performance & fairness -> slicing 
+- slicing means separating ur data into critical slices and evaluating how ur model performs for each slice. 
+- for some problems ur model should behave the same for diff slices, otherwise it may be biased eg. if you separate ur data into men and women slices then the accuracy should be the same for both
+- for some problem you expect ur model to perform better for certain slices eg. in churn prediction, paying customers slice is more important than freemium customers slice. you would expect the former slice performance to be better. 
+- defining critical slices is more art than science. some techniques: heuristic based (domain knowledge), error analysis (finding patterns in misclassified examples)
+- after finding critical slices u need sufficient correctly labeled data for each slice to be able to do the slice-based eval tests
+
+#### Final Takeaways
+- start simple w ur ml models, helps w debugging aswell
+- pick a suitable model and identify tradeoffs early 
+- use ensembles when a small inc in performance may lead to large financial gain
+- tracking and versioning of code, model, and data is important 
+- weaker model w well tuned params can outperform stronger models 
+- automl can be used for hyperparam tuning, but be careful w important hyperparams
+- models need to be evaluated outside of performance metrics for robustness, fairness and calibration
+- be mindful of how changing certain features changes ur outputs, and how ur model perform on diff slices of your data. 
+
+### DMLS CH7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
