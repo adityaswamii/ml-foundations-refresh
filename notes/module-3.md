@@ -284,21 +284,119 @@ performance & fairness -> slicing
 
 ### DMLS CH7
 
+Model selected, trained, evaluated. Time to deploy.  
 
+#### Challenges of deploying to prod:
+- making ur model available to a large no of users w 99% uptime and low latency
+- realizing when a model is failing in production
+- seamlessly pushing updates to fix bugs 
 
+exporting the model (eg. tf.keras.Model.save) is known as serialization. models have 2 parts that can be exported - model definition and model params, usually nboth are exported together
 
+##### Deployment Mythbusters
+- MANY models are used concurrently at medium to large companies, one model per application feature is common
+- ML systems suffer from "software rot", and get worse from data distribution shifts over time
+- Models need to be updated periodically, like once  month or once a quarter
+- ML engineers need to worry about scale, models need to provide several hundred inferences per second or deal with millions of users
 
+#### Serving Predictions
+1. Batch Prediction:  
+    - Uses only batch features.
+    - Runs a scheduled or triggered job to mass produce predictions and store them in a DB. At inference time, the pre-calculated prediction is looked up from the DB.
+    - Pros : Precalculated predictions can be retrieved fast. Batching up inferences takes advantage of GPU vectorization and improves prediction throughput. Prediction throughput can be furhter increasing by dividing the data into diff parallel nodes. 
+    - Cons : You many generate predictoins for infrequent users who dont use them. Cannot take into account fresh data that became available since the last job ran. 
+    - Usecase : When u need fast prediction, and it is ok to use features that may not be up to date. It must be acceptable to calculate and store preds for all queries. Another usecase is when you need a prediction for all possible queries to then find out some overall aggr statistic of the population (eg. u want to reach out t the top 10% of customers that are likely to churn next month)
+2. Online Prediction: 
+    - Uses only batch features 
+    - The inference computation is done on the fly and on demand, but all the req features have been pre-computed and no live calculation of streaming features is needed.
+    - Pros : You only generate predictions for the users that actually need it
+    - Cons : Predictions will be slower to present to the user. Again, u cannot take into account data that became available recently. Tough to batch up inference requests to use GPU vectorization since you need to consider time windws fro batching. 
+    - Usecase : When you cannot afford to waste compute to get predictions for all users, and you are willing to compromise speed of retrieval. Also need to be ok using pre-computed features. 
+3. Streaming Prediction:
+    - Uses both batch features and streaming features
+    - The inference computation is done on the fly and on demand, as in online prediction, but some of the model features are pre-computed and some need to be fresh and are calculated on the fly using streaming features. 
+    - Your system needs real-time transport and stream computation of data
+    - Pros : You only generate predictions for users that actually need it. You can take into account fresh data that just became available for feature calculation.
+    - Cons: Predictions will be even slower than with online prediction since you also need to wait for streaming features to get computed and then inference. Tough to batch up inference requests to use GPU vectorization cos u need to deal w time windows for batching.
+    - Usecase: When it is critical for predictions to take into account fresh data. eg. Fraud detection of transactions and logins 
+    ![Streaming Prediction](image-3.png)
+4. Hybrid b/w 1 & 2 (Batch and Online prediction using only batch features):
+    - Precompute predictions for popular queries (eg. users that login frequently) and generate online predictions using mode 2 for less popular queries.
+    - Pros : The problem of wasting resources for calculating and storing inferences for infrequent queries is solved.
+    - Cons : Depends on how well you figure out how to define a "frequent query". Increased complexity since you need to deal w both a batched and an online system. Cannot take into account fresh data that j became available.
+    - Usecase : When you need to provide fast prediction retrieval to common queries (mode 1) but you can't afford to pre-calculate predictions for all queries. The benefits of faster prediction retrieval needs to outweigh the increased complexity.
 
+Note for mode 3: Companies sometimes have separate data pipelines for batch data that gets used to build features for training, and for streaming data to calcualte features on the fly at inference time. This causes bugs in ML since changes in one pipeline do not get propagated to the other, leading to feature drift. There is a need to build infrastructure that unites the batch and streaming pipeline, by using feature stores or stream computing technology like Apache Flink.
 
+#### Ways to reduce inference latency 
+1. Model Compression - make the model smaller
+2. Inference Optimization - tweak computation and compilation parameters to reduce inference latency
+3. Faster hardware - buy better shit or make ur shit run faster
 
+##### Model Compression
+_(Note: compression also has ripple effects on fairness)_  
+4 common techniques for model compression:
+1. Low-rank factorization:
+    - replace high-dim tensors w low-dim ones, eg. compact convolutional filters for CNNs
+    - Cons : low-rank methods are specific to certain types of models and require deep understanding of the underlying architectures, hence not widely used in all use-cases currently
+2. Knowledge distillation:
+    - a small model(student) is trained to mimic a larger model/ensemble of models (teacher). you deploy the smaller model, eg. DistilBERT reduces the size of a BERT model by 40% while retaining 97% of its language understanding capabilites and being 60% faster
+    - Pros : works regardless of architectural differences eg. u can have random forest student and trasnformer NN teacher
+    - Cons: requires availability of a teacher model 
+3. Pruning: 
+    - inspired by pruning of decision trees (removing redundant tree branches)
+    - in the case of neural networks, pruning can mean removing entire nodes (reducing the no of params) or, more commonly, finding parameters that contribute little to the prediction and setting them to zero. In the latter, the architecture remains the same but we can reduce the no of nonzero params making the model more sparse -> less storage + faster computation. 
+    - Pros: works regardless of the architecture of the NN
+    - Cons: pruning may introduce bias to the model 
+4. Quantization: 
+    - instead of using 32-bit precision floats to store parameters, use less bits per parameter -> smaller memory footprint of the model. using quantization during training could let u train bigger models as well as increase the batch size, speeding up training computation. 
+    - less precision in floating numbers also mean less computation need to achieve the desired precision, speeding up inference. 
+    - Types of quantization:  
+        - By target precision:
+        1. 16-bits -> Low-precision
+        2. 8-bits -> integer quantization aka fixed point (industry standard for inference on the edge, tensorflow lite, pytorch mobile, tensorRT, all offer post-training fixed-point quantization)
+        3. 1-bit -> binary weight networks
+        - By when quantization is applied:
+        1. during training -> train in low precision from the start
+        2. post-training -> train at full precision and then quantize the trained model just for inference
+    - Pros : existing libraries make all forms of quantization straightforwar to do. generalizes well to several models. low-precision training has started getting direct hardware support
+    - Cons : less precision means fewer numbers can be represented, leading to risk of precision rounding errors and number boundary overflow. small rounding errors may lead to dramatic changes in performance.
 
+#### ML on the Cloud vs on the Edge
+Where should the main chunk of inference computation happen?  
+1. Cloud:
+    - Pros: easy to deploy, no need to worry abt compatibility
+    - Cons: ML inference cloud bills can be high. The more computation you shift to the edge, the less you pay. Cloud introduces network latency, which can be a bottleneck. Also depends on the user having internet access
+2. Edge:
+    - browsers, phones, laptops, cars, robots, ASICs, smart devices. Companies are trying to develop edge-optimized devices for diff usecases. 
+    - Pros: No internet needed, and no network latency. useful for sensitive data that you don't want to send over a network eg. fingerprints. edge computation makes iteasier to comply w privacy regulations
+    - Cons: hardware compatibility becomes an issue. diff kinds of target hardware need models to be compiled and optimizede for them. The edge devices also need to be powerful enough, have enough memory and enough battery to run ur model. 
 
+##### Compiling and Optimizing Models for Edge Devices
+Compilation is the process of transforming your ML model into an artefact that acan run in a target hardware.  
+- As an applied ML engineer, you typically use model compilers that are already created. 
+- Some compilers rely on intermediate representations (IRs) which are standardized intermediate formats that framework creators and hardware manufacturers have both adopted to ease the creation of compilers and alleviate the hardware support problem.
 
+Optimization is the process of making tweaks to the model/artefact to take advantage of the target hardware's properties and make it run faster. 
+- just because ur model can run on some hardware doesnt mean it does so efficiently
+- As an applied ML engineer, you typically rely on compiler or hardware optimizaion instead of going and optimizing the hardware operations yourself
+- ML framework devs and hardware manufacturers hire specialized optimization engineers that know abt both ML and hardware architectures
+    - Manual model optimization: Optimization engineers use heuristics to find ways to make the model run faster. Hand-made heuristics have the problem of not being optimal and being inflexible when the udnerlying ML framework or hardware architecture changes
+    - Using ML for model optimization: ML can be used to saerch for an optimal operation order instead of relying on heuristics. This is better as it is closer to optimality and flexible to changes. 
+- As an applied ML engineer you optimize your model once for one hardware backend and then run it on multiple devices of that same hardware type. 
 
+##### ML in browsers
+if u can make ur model run well on a browser, u dont need to worry abt target hardware, compilation, optimization.
+You can use libraries to transform models into js browser runnable artefacts, but javascript is not weell suited for ML. so models typically get compiled into WebAssembly (WASM) which is much faster than js, but still slower compared to running models in their native hardware using android/ios apps
 
-
-
-
+#### Final Takeaways:
+- challenges of deploying a model (serialization)
+- diff types of prediction modes - batch, online, streaming, hybrid batch/online, and their use cases
+- ways to reduce inference latency - model compression, inference optimization, faster hardware
+- model compression can be done by low-rank factorization, knowledge distillation, pruning, quantization
+- running inferences on the cloud vs the edge -> using the edge is cheaper but need to consider hardware
+- models must be compiled and optimized for various target hardware
+- in general if ur model can run well on a browser then u dont need to worry abt target hardware. 
 
 
 
