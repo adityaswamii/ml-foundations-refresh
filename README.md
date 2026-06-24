@@ -188,13 +188,13 @@ A granular tracker bridging university-level data science foundations with produ
 | Days | Focus |  
 | :--- | :--- |  
 | **Day 1** | Production ML first -> Case Study & DMLS |  
-| **Day 2** | Production ML -> DMLS, Implementation. Module 2 stat gaps |   
-| **Day 3** | Module 3 unsupervised learning → clustering → anomaly detection |  
-| **Day 4** | Module 3 time series — components, stationarity, ACF/PACF |  
-| **Day 5** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project |  
-| **Day 6** | Module 4 transformer architecture → RAG pipelines |  
-| **Day 7** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration |  
-| **Day 8** | Module 4 safety & evaluation → wrap-up, deferred topics, review |  
+| **Day 2** | Production ML -> Data drift & Monitoring |   
+| **Day 3** | Module 1 SQL |  
+| **Day 4** | Module 2 Statistics and Probability |  
+| **Day 5** | Module 3 Classical ML |  
+| **Day 6** | Module 3 Time series — components, stationarity, ACF/PACF, ARIMA, Prophet → LSTM autoencoder project |  
+| **Day 7** | Module 4 Transformer architecture, fine-tuning strategies (LoRA, QLoRA) |  
+| **Day 8** | Module 4 RAG pipelines, agents & orchestration, safety & evaluation |  
 
 <!-- > Production ML is Day 1 because it reframes everything that follows. Understanding how models are deployed, monitored, and maintained in the real world changes how you read every algorithm and technique in Modules 1–4. -->
 
