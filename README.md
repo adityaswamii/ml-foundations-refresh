@@ -1,4 +1,4 @@
-# 🚀 10-Day ML Foundations & AI Systems Refresh
+# 🚀 ML Foundations & AI Systems Refresh
 
 A granular tracker bridging university-level data science foundations with production ML and modern AI systems — structured around a sprint at Astrikos AI.
 
@@ -7,14 +7,13 @@ A granular tracker bridging university-level data science foundations with produ
 ## 📊 Sprint Overview
 * **Start Date:** June 18, 2026
 * **Target Completion:** June 28, 2026
-* **Daily Hours:** 7 hrs/day — 70 hrs total
 
 ### 🚦 Progress Matrix
 | Module / Phase | Hours Allocated | Status | Last Reviewed |
 | :--- | :---: | :---: | :--- |
-| **Module 1:** SQL & Relational Analytics | 8h | ⬜ Not Started | — |
-| **Module 2:** Statistics & Data Manipulation | 8h | 🟫 In Progress | June 17, 2026 |
-| **Module 3:** Classical ML & Time Series | 30h | ⬜ Not Started | — |
+| **Module 1:** SQL & Relational Analytics | 8h | 🟫 In Progress | June 23, 2026 |
+| **Module 2:** Statistics & Data Manipulation | 8h | ✅ Completed | June 22, 2026 |
+| **Module 3:** Classical ML & Time Series | 30h | 🟫 In Progress | June 24, 2026 |
 | **Module 4:** Generative AI & LLM Systems | 24h | ⬜ Not Started | — |
 
 ---
@@ -26,18 +25,18 @@ A granular tracker bridging university-level data science foundations with produ
 ### 📂 Module 1: SQL & Relational Analytics
 *Goal: Refresh relational data manipulation and analytical queries for feature engineering.*
 
-* ⬜ **SQL Basics**
-  * 🟡 `SELECT`, `FROM`, `WHERE`, `ORDER BY`, `LIMIT`
+* ✅ **SQL Basics**
+  * ✅ `SELECT`, `FROM`, `WHERE`, `ORDER BY`, `LIMIT`
 
-* ⬜ **SQL Intermediate Analytics**
-  * 🟡 `GROUP BY`, `HAVING`
-  * 🟡 Aggregate Functions: `SUM`, `AVG`, `COUNT`, `MIN`, `MAX`
+* ✅ **SQL Intermediate Analytics**
+  * ✅ `GROUP BY`, `HAVING`, `DISTINCT`, `CASE`
+  * ✅ Aggregate Functions: `SUM`, `AVG`, `COUNT`, `MIN`, `MAX`
 
-* ⬜ **Relational Algebra (Joins)**
-  * 🟡 `INNER JOIN`
-  * 🟡 `LEFT JOIN`
-  * 🟡 `RIGHT JOIN`
-  * 🟡 `FULL JOIN`
+* ✅ **Relational Algebra (Joins)**
+  * ✅ `INNER JOIN`
+  * ✅ `LEFT JOIN`
+  * ✅ `RIGHT JOIN`
+  * ✅ `FULL JOIN`
 
 * ⬜ **Advanced SQL Analytics**
   * ⬜ Common Table Expressions (CTEs)
@@ -51,14 +50,14 @@ A granular tracker bridging university-level data science foundations with produ
 ### 📂 Module 2: Statistics & Data Manipulation
 *Goal: Re-verify statistical mechanics and Python data science libraries.*
 
-* ⬜ **Statistics & Probability**
+* ✅ **Statistics & Probability**
   * ✅ Descriptive Stats: Mean, Median, Mode, Standard Deviation, Variance
-  * 🟡 Distributions: Normal, Binomial, Poisson
-  * 🟡 Outlier Management: Identifying via Z-scores or IQR
-  * ⬜ Outlier Actions: Deciding whether to cap, transform, or remove
-  * 🟡 Hypothesis Testing: P-values, Null vs. Alternative Hypothesis
-  * ⬜ A/B Testing basics
-  * 🟡 Correlation vs. Causation principles
+  * ✅ Distributions: Normal, Binomial, Poisson
+  * ✅ Outlier Management: Identifying via Z-scores or IQR
+  * ✅ Outlier Actions: Deciding whether to cap, transform, or remove
+  * ✅ Hypothesis Testing: P-values, Null vs. Alternative Hypothesis
+  * ✅ A/B Testing basics
+  * ✅ Correlation vs. Causation principles
 
 * ✅ **Programming for Data (Python)**
   * ✅ Fundamentals: Variables, Loops, Functions, Lists
@@ -71,7 +70,7 @@ A granular tracker bridging university-level data science foundations with produ
 *Goal: Refresh core ML paradigms, regularization, anomaly detection, and forecasting.*
 
 * ⬜ **Production ML**
-  * ⬜ Deployment: Batch vs. real-time inference, model versioning, latency
+  * ✅ Deployment: Batch vs. real-time inference, model versioning, latency
   * ⬜ Monitoring: Data Drift vs. Concept Drift — detection and response
   * ⬜ Continual Learning: Retraining pipelines as new data arrives
 
@@ -89,7 +88,7 @@ A granular tracker bridging university-level data science foundations with produ
 
 * ⬜ **Unsupervised Learning & Anomaly Detection**
   * 🟡 Clustering: K-Means, DBSCAN, Hierarchical Clustering
-  * ⬜ Anomaly Detection: Isolation Forest
+  * ✅ Anomaly Detection: Isolation Forest
   * ⬜ Anomaly Detection: LSTM Autoencoder on time-series data
   * ⬜ Cluster Evaluation: Silhouette Coefficient
   * 🟡 Bias-Variance Tradeoff: Underfitting vs. Overfitting
@@ -189,15 +188,13 @@ A granular tracker bridging university-level data science foundations with produ
 | Days | Focus |  
 | :--- | :--- |  
 | **Day 1** | Production ML first -> Case Study & DMLS |  
-| **Day 2** | Production ML -> DMLS, Implementation. Module 2 stat gaps |  
-| **Day 3** | Module 1 advanced SQL (CTEs, window functions) → practice problems |  
-| **Day 4** | Module 3 feature engineering → supervised learning deep dive |  
-| **Day 5** | Module 3 unsupervised learning → clustering → anomaly detection |  
-| **Day 6** | Module 3 time series — components, stationarity, ACF/PACF |  
-| **Day 7** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project |  
-| **Day 8** | Module 4 transformer architecture → RAG pipelines |  
-| **Day 9** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration |  
-| **Day 10** | Module 4 safety & evaluation → wrap-up, deferred topics, review |  
+| **Day 2** | Production ML -> DMLS, Implementation. Module 2 stat gaps |   
+| **Day 3** | Module 3 unsupervised learning → clustering → anomaly detection |  
+| **Day 4** | Module 3 time series — components, stationarity, ACF/PACF |  
+| **Day 5** | Module 3 time series — ARIMA, Prophet → LSTM autoencoder project |  
+| **Day 6** | Module 4 transformer architecture → RAG pipelines |  
+| **Day 7** | Module 4 fine-tuning strategies (LoRA, QLoRA) → agents & orchestration |  
+| **Day 8** | Module 4 safety & evaluation → wrap-up, deferred topics, review |  
 
 <!-- > Production ML is Day 1 because it reframes everything that follows. Understanding how models are deployed, monitored, and maintained in the real world changes how you read every algorithm and technique in Modules 1–4. -->
 
@@ -231,16 +228,42 @@ A granular tracker bridging university-level data science foundations with produ
 
 ### Day 2: 19/06
 * **Focus:**
-  DMLS chapters 6-9
-  Evidently AI ML Monitoring Guide
-  Module 2 stats & probability refresh
+  DMLS 
 * **Completed Micro-topics:**
-  
+  DMLS chapter 6
+* **Blockers/Insights encountered:**
+  dmls is heavy, takes time to make notes on the chapter but going back and looking at self-summarized takeaways is a good way to remember key points
+---
+
+### Day 3: 22/06
+* **Focus:**
+  module 2 stats  
+* **Completed Micro-topics:**
+  outliers, hypothesis testing, a/b testing, causation vs correlation
+* **Blockers/Insights encountered:**
+  none
+---
+
+### Day 4: 23/06
+* **Focus:**
+  module 1 sql 
+* **Completed Micro-topics:**
+  sql basics, advanced ctes, window functions, subqueries 
+* **Blockers/Insights encountered:**
+  yet to do practice problems 
+---
+
+### Day 5: 24/06
+* **Focus:**
+  dmls ch7-9
+  code something
+* **Completed Micro-topics:**
+  dmls ch7. implementation of anomaly detection using isolation forests 
 * **Blockers/Insights encountered:**
 
 ---
 
-### Day 3: 20/06
+### Day 6: 25/06
 * **Focus:**
 
 * **Completed Micro-topics:**
@@ -249,7 +272,7 @@ A granular tracker bridging university-level data science foundations with produ
 
 ---
 
-### Day 4: 21/06
+### Day 7: 26/06
 * **Focus:**
 
 * **Completed Micro-topics:**
@@ -258,7 +281,7 @@ A granular tracker bridging university-level data science foundations with produ
 
 ---
 
-### Day 5: 22/06
+### Day 8: 27/06
 * **Focus:**
 
 * **Completed Micro-topics:**
@@ -267,7 +290,7 @@ A granular tracker bridging university-level data science foundations with produ
 
 ---
 
-### Day 6: 23/06
+### Day 9: 28/06
 * **Focus:**
 
 * **Completed Micro-topics:**
@@ -276,43 +299,7 @@ A granular tracker bridging university-level data science foundations with produ
 
 ---
 
-### Day 7: 24/06
-* **Focus:**
-
-* **Completed Micro-topics:**
-
-* **Blockers/Insights encountered:**
-
----
-
-### Day 8: 25/06
-* **Focus:**
-
-* **Completed Micro-topics:**
-
-* **Blockers/Insights encountered:**
-
----
-
-### Day 9: 26/06
-* **Focus:**
-
-* **Completed Micro-topics:**
-
-* **Blockers/Insights encountered:**
-
----
-
-### Day 10: 27/06
-* **Focus:**
-
-* **Completed Micro-topics:**
-
-* **Blockers/Insights encountered:**
-
----
-
-### Wrap-up: 28/06
+### Wrap-up: 
 * **Modules completed:**
 
 * **Topics deferred to next sprint:**
