@@ -42,7 +42,7 @@ A granular tracker bridging university-level data science foundations with produ
   * ⬜ Common Table Expressions (CTEs)
   * ⬜ Subqueries
   * 🟡 String Functions (`CONCAT`, `TRIM`)
-  * ⬜ Window Functions: `RANK`, `ROW_NUMBER`, `LEAD`, `LAG`
+  * 🟡 Window Functions: `RANK`, `ROW_NUMBER`, `LEAD`, `LAG`
   * ⬜ Practice: Solve 3–5 targeted problems on HackerRank / LeetCode
 
 ---
@@ -69,41 +69,41 @@ A granular tracker bridging university-level data science foundations with produ
 ### 📂 Module 3: Classical Machine Learning & Time Series
 *Goal: Refresh core ML paradigms, regularization, anomaly detection, and forecasting.*
 
-* ⬜ **Production ML**
+* ✅ **Production ML**
   * ✅ Deployment: Batch vs. real-time inference, model versioning, latency
-  * ⬜ Monitoring: Data Drift vs. Concept Drift — detection and response
-  * ⬜ Continual Learning: Retraining pipelines as new data arrives
+  * ✅ Monitoring: Data Drift vs. Concept Drift — detection and response
+  * ✅ Continual Learning: Retraining pipelines as new data arrives
 
-* ⬜ **Feature Engineering & Selection**
-  * ⬜ Filter, Wrapper, and Embedded methods
-  * 🟡 Dimensionality Reduction: PCA & the Curse of Dimensionality
-  * 🟡 Model Selection: Choosing feature engineering based on model architecture
+* ✅ **Feature Engineering & Selection**
+  * ✅ Filter, Wrapper, and Embedded methods
+  * ✅ Dimensionality Reduction: PCA & the Curse of Dimensionality
+  * ✅ Model Selection: Choosing feature engineering based on model architecture
 
-* ⬜ **Supervised Learning Deep Dive**
-  * 🟡 Core Paradigm: Supervised vs. Unsupervised operational differences
-  * 🟡 Algorithm Choice: Tree-based vs. Regression-based models for regression tasks
-  * 🟡 Feature Scaling/Normalization: Mandatory vs. Optional by model type
-  * 🟡 Ensemble Methods: Bagging (variance reduction) vs. Boosting (bias reduction)
-  * 🟡 Neural Mechanics: Activation functions and Loss functions for classification vs. regression
+* ✅ **Supervised Learning Deep Dive**
+  * ✅ Core Paradigm: Supervised vs. Unsupervised operational differences
+  * ✅ Algorithm Choice: Tree-based vs. Regression-based models for regression tasks
+  * ✅ Feature Scaling/Normalization: Mandatory vs. Optional by model type
+  * ✅ Ensemble Methods: Bagging (variance reduction) vs. Boosting (bias reduction)
+  * ✅ Neural Mechanics: Activation functions and Loss functions for classification vs. regression
 
 * ⬜ **Unsupervised Learning & Anomaly Detection**
   * 🟡 Clustering: K-Means, DBSCAN, Hierarchical Clustering
   * ✅ Anomaly Detection: Isolation Forest
   * ⬜ Anomaly Detection: LSTM Autoencoder on time-series data
   * ⬜ Cluster Evaluation: Silhouette Coefficient
-  * 🟡 Bias-Variance Tradeoff: Underfitting vs. Overfitting
-  * 🟡 Overfitting Fixes: Complexity tuning, adding data, Cross-Validation
-  * 🟡 Regularization: L1/Lasso vs. L2/Ridge
-  * 🟡 Optimization: Gradient Descent — Batch, SGD, Mini-Batch
-  * 🟡 Imbalanced Data: Resampling, Class weighting, Precision/Recall/F1
-  * 🟡 Metrics Evaluation: Precision vs. Recall, Adjusted R² vs. R²
+  * ✅ Bias-Variance Tradeoff: Underfitting vs. Overfitting
+  * ✅ Overfitting Fixes: Complexity tuning, adding data, Cross-Validation
+  * ✅ Regularization: L1/Lasso vs. L2/Ridge
+  * ✅ Optimization: Gradient Descent — Batch, SGD, Mini-Batch
+  * ✅ Imbalanced Data: Resampling, Class weighting, Precision/Recall/F1
+  * ✅ Metrics Evaluation: Precision vs. Recall, Adjusted R² vs. R²
 
 * ⬜ **Time Series Analysis**
-  * ⬜ Components: Trend, Seasonality, Cyclical, Noise
-  * ⬜ Structural Models: Additive vs. Multiplicative
-  * ⬜ Stationarity: Definition, testing, mathematical necessity
-  * ⬜ Transformation: Differencing and Autocorrelation (ACF/PACF)
-  * ⬜ Forecasting Frameworks: ARIMA and Prophet
+  * ✅ Components: Trend, Seasonality, Cyclical, Noise
+  * ✅ Structural Models: Additive vs. Multiplicative
+  * ✅ Stationarity: Definition, testing, mathematical necessity
+  * ✅ Transformation: Differencing and Autocorrelation (ACF/PACF)
+  * 🟡 Forecasting Frameworks: ARIMA and Prophet
 
 ---
 
@@ -248,9 +248,9 @@ A granular tracker bridging university-level data science foundations with produ
 * **Focus:**
   module 1 sql 
 * **Completed Micro-topics:**
-  sql basics, advanced ctes, window functions, subqueries 
+  sql basics and intermediate level
 * **Blockers/Insights encountered:**
-  yet to do practice problems 
+  yet to do advanced level (window functions/ ctes) and practice problems 
 ---
 
 ### Day 5: 24/06
@@ -265,36 +265,29 @@ A granular tracker bridging university-level data science foundations with produ
 
 ### Day 6: 25/06
 * **Focus:**
-
+  dmls ch8. postgresql
 * **Completed Micro-topics:**
-
+  partially completed ch8. revised sql intermediate concepts 
 * **Blockers/Insights encountered:**
-
+  took a lot of time to understand the concepts in detail, maybe focus less on the details and more on a big-picture understanding? 
 ---
 
 ### Day 7: 26/06
 * **Focus:**
-
+  time series. dmls ch8
 * **Completed Micro-topics:**
-
+  ch8 upto monitoring predictions. time series & started RAG
 * **Blockers/Insights encountered:**
 
 ---
 
-### Day 8: 27/06
+### Day 8: 29/06
 * **Focus:**
-
+  finish ch8
+  refresh ml topics
+  rag
 * **Completed Micro-topics:**
-
-* **Blockers/Insights encountered:**
-
----
-
-### Day 9: 28/06
-* **Focus:**
-
-* **Completed Micro-topics:**
-
+  ch8 finished. classical ml topics revised.
 * **Blockers/Insights encountered:**
 
 ---
