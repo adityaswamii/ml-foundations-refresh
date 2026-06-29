@@ -1,13 +1,11 @@
-## 🔗 Quick-Reference Sources
-- *Airbnb Case Study:* [Using Machine Learning to Predict Value of Homes on Airbnb](https://medium.com/airbnb-engineering/using-machine-learning-to-predict-value-of-homes-on-airbnb-9272d3d4739d)
+# 🔗 Quick-Reference Sources
+- **Airbnb Case Study:** [Using Machine Learning to Predict Value of Homes on Airbnb](https://medium.com/airbnb-engineering/using-machine-learning-to-predict-value-of-homes-on-airbnb-9272d3d4739d)
 - **Chip Huyen DMLS:** [Granular Bulleted Summaries (Ch. 7-9)](https://github.com/serodriguez68/designing-ml-systems-summary)
 - **Drift Implementation Blueprint:** [Evidently AI ML Monitoring Guide](https://www.evidentlyai.com/ml-in-production/model-monitoring)
 
----
+# 📝 Study Scratchpad
 
-## 📝 Study Scratchpad
-
-### Basic ML Review
+## Basic ML Review
 
 A model is a function that turns inputs into outputs, which are then used to make predictions.  
     In supervised ML, inputs and outputs are given as data, and the function is derived from the data. Still need to specify the form that the function should take eg. linear function, decision tree, neural network  
@@ -20,7 +18,7 @@ Model Selection isnot just selecting function. Also involves picking right objec
     the set of params that perform well on training data aren't always the best, a diff set might perform better in production      
 
 
-### Airbnb case study
+## Airbnb case study
 
 Data products (eg.personalized search ranking for guests, smart pricing for hosts) are useful but costly to make.  
 Advances in ML infra lowered the cost to deploy new ML models to production  
@@ -34,17 +32,17 @@ Specific Case: LTV modeling - predicting the value of homes on airbnb
         create better listing segments
     Calculating historical value of existing listings can be done using past data, they decided to predict LTV of new listing using ML
 
-#### ML Workflow for LTV Modeling    
+### ML Workflow for LTV Modeling    
 
 Feature Engineering -> Model Training -> Model Selection & Validation -> Productionization  
 
-##### Feature Engineering - Define relevant features
+#### Feature Engineering - Define relevant features
 (airbnb's internal feature repo - Zipline)
 one of the first step in any supervised ml project is to define relevant features, correlated w the outcome variable, aka feature engineering. eg. In predicting LTV u might compute the percent of the next 180 calendar dates that a listing is available or a listing's price relative to comparable listings in the same market  
 Tedious - requires domain specific knowledge, not easily shareable/reusable
 solution, Zipline - a training feature repository that provides features at diff levels of granularity (host, guest, listing, or market level). 
 Crowdsourced, allowing data scientists to use features prepared/vetted by others for past projects. IF a feature is not available, a user can create their own. When multiple features are reqiured fora training set, zipline automaically performs key joins and backfills the training data behind the scenes. 
-##### Prototyping and Training - Train a model prototype
+#### Prototyping and Training - Train a model prototype
 Before fitting a model, data processing needs to happen. Data imputation to deal w missing values & encoding categorical variables (if few categories, one-hot-encoding. if many, ordinal encoding)
 For prototyping, we don't know the best set of features to use so its important to write code that allows for rapid iteration.  
     The pipeline constuct is useful for prototyping. [Pipelines](http://scikit-learn.org/stable/modules/compose.html#pipeline-chaining-estimators) allow data scientists to specify high level blueprints that describe how features should be transformed and which models to train. At a high level, pipelines are used to specify data transformations for diff types of features.   
@@ -79,12 +77,12 @@ For prototyping, we don't know the best set of features to use so its important 
                 
             features = FeatureUnion(transforms) # FeatureUnion simply combines the features columnwise to get the final training dataset
 ```  
-##### Model Selection & Validation - Performing model selection and tuning    
+#### Model Selection & Validation - Performing model selection and tuning    
 need to decide which candidate model is the best to put into production     
 to do so, weigh the tradeoffs bw model interpretability and complexity eg. sparse linear model might be v interpretable but not complex enough to generalize well, whereas a tree based model might be flexible enough to capture nonlinear patterns but not v interpretable. This is known as Bias-Variance tradeoff.![Types of Models ranked for interpretability vs flexibility](image.png)  
     In applications such as insurance or credit screening, its imp for model to be transparent and interpretable to ensure fairness. In applications such as image classification, it is more imp to have a performant classifier than an interpretable model.  
 To speed up the process of model selection, they experimented using various AutoML frameworks and found that XGBoost outperformed benchmark models significantly. Since the task was to predict listing values, they productionized their final model using XGBoost, which favors flexibility over interpretability.   
-##### Productionization - Take the selected model prototype to production  
+#### Productionization - Take the selected model prototype to production  
 ML Automator - Airbnb's notebook translation framework  
 building a production pipeline way more complex than a prototype on a local laptop:  
 1. how to perform periodic re-training?  
@@ -94,18 +92,18 @@ building a production pipeline way more complex than a prototype on a local lapt
 ML Automator was built to automatically translate a jupyter notebook into an Airflow ML pipeline. This framework was designed specifically for data scientists who are already familiar w writing prototypes in python and want to take their model to production w limited exp in data engineering.  
 The requirements for this framework are: user must specify a model config in the notebook to tell the framework where to locate training table, how many resources to allocate for training and how scores will be computed, and secondly data scientists are required to write specific fit and transform functions. fit() specifies exactly how training will be done. transform() will be wrapped as a python UDF for distributed scoring if needed. 
 ML Automator wraps the notebook inside a python udf and creates and airflow pipeline. Data engineering tasks such as data serialization, scheduling of periodic re-training, distributed scoring, are all encapsulated as a part of this daily batch job. This significantly lowers the cost of model development for data scientists, like a dedicated data engineer to help w productionization.   
-##### Topics not covered    
+#### Topics not covered    
 Tracking model performance over time, leveraging elastic compute environment for modeling etc.  
 
-#### Final Takeaways  
+### Final Takeaways  
 1. Thanks to the collaboration of data scientists and ML infra, the cost of model development is significantly lower. Zipline - feature engineering, Pipeline - model prototyping, AutoML - model selection & benchmarking, ML Automator - productionization.  
 2. Notebook driven design reduces barrier to entry. Notebooks used in production are guaranteed to be correct, self-documenting and up-to-date, resulting in strong adoption from new users.  
 3. Teams are willing to invest more in ML product ideas. 
 
 
-### DMLS CH6
+## DMLS CH6
 
-#### Criteria to select ML models
+### Criteria to select ML models
 
 model must be suitable for the problem 
 eg. fraud detection system -> anomly detection problem -> models used for this kind of problem are KNNs, isolation forest, clustering, and neural network
@@ -130,32 +128,32 @@ tradeoffs -> false positives vs false negatives, compute vs performance, latency
 understand assumptions!!!
 
 
-#### Ensembles - Bagging vs Boosting vs Stacking
+### Ensembles - Bagging vs Boosting vs Stacking
 
 multiple base learners are trained and each of them outputs a prediction, the final pred is derived using majority vote
 harder to deploy/maintain - useful for tasks where small performance boosts can lead to huge financial gain
 
 less correlation bw base learners -> better. common to use diff models for an ensemble eg. tranformer, rnn & xgboost tree can all be part of one ensemble. use odd no of models to avoid voting ties 
 
-##### Bagging ->
+#### Bagging ->
 bootstrap data (sample w replacement) to create diff training data sets and train a diff model on each set. 
 improves stability of unstbale methods, accuracy & reduces variance (helps avoid overfitting) 
 ! can mildly degrade performance in stable methods like knn
 
-##### Boosting->
+#### Boosting->
 Train the first weak classifier on the original dataset, samples are then reweighted acc to how well they are classified. misclassified ones have higher weights. 
 Train a 2nd classifier w the reweighted samples. Reweight samples again. Repeat for n iterations.  
 The final strong classifier is a weighted combination of all the existing classifiers. Classifiers with smaller training errors have higher weights.
 eg. Gradient Boosted Machines (GBMs), XGBoost, LightGBM
 
-##### Stacking ->
+#### Stacking ->
 Multiple base learners make prediction on k-fold CV data.
 The final prediction uses meta-learner which combines the predictions from the base ones. It may use the original features as well to guide its predictions. 
 
 
-#### Experiment Tracking, Versioning, Debugging
+### Experiment Tracking, Versioning, Debugging
 
-##### Tracking
+#### Tracking
 expmt tracking - process of tracking progress and result of an exp
 versioning- process of logging all the config params of an exp for replicability
 helps w reproducibility but does not ensure it
@@ -164,12 +162,12 @@ what to track / babysit -> loss curve of train & each of the eval splits, model 
 
 theory vs practice - tracking everything u can may sound good but might be overwhelming/distracting irl 
 
-##### Versioning 
+#### Versioning 
 ML systems -> part code, part data. version both
 Challenges -> data is larger than code, cannot use code versioning tools. 
 data versioning is still not optimized, do we track every change or only checksum. Tools like DVC are used in prod 
 
-##### Debugging
+#### Debugging
 
 challenges: 
 - models fail silently. predictions are made, but wrong
@@ -184,11 +182,11 @@ some techniques:
 3. set a rnadom seed. using a consistent random sed across experiments helps keep things comparable 
 4. more techniques: [A Recipe for Training Neural Networks - Andrej Karpathy](http://karpathy.github.io/2019/04/25/recipe/)
 
-#### Distributed Training
+### Distributed Training
 
 when data doesn't fit into memory, you need to utilize multiple machines in parallel to train your models
 
-##### Data Parallelism
+#### Data Parallelism
 most common - split your data across multiple machines, train your model on all of them and accumulate gradients
 problems:
 1. sync vs async gradient descent -> in gd, you use mini-batches to avoid processing the entire dataset at every step. when using parallel training, you furhter split those into mini-mini-batches. how to update weights and biases after processing mini-mini-batch?
@@ -204,19 +202,19 @@ problems:
     - incr batch size while keepnig LR and no. of epochs constant can lower accuracy
     - the selection of batch szie and LR hyperparams is an art more than a science. [Weights & Biases vid](https://www.youtube.com/watch?v=ZBVwnoVIvZk)
 
-##### Model Parallelism 
+#### Model Parallelism 
 in this, diff components of ur model are trained on diff machines. NOT mutually exclusve w data parallelism, but tough to setup both simultaneously.  
 ![Hybrid Data and Model Parallelism Arrangement](image-1.png)  
 Hybrid Data and Model Parallelism Arrangement.  
 
-##### Pipeline Parallelism 
+#### Pipeline Parallelism 
 Split up the model into serial components that run on diff machines and then stagger the feeding of miniminibatches. 
 ![pipeline parallelism](image-2.png)
 
-#### Auto ML
+### Auto ML
 the idea of using computation to solve chore tasks done by ml engineers 
 
-##### Soft Auto ML - Hyperparam tuning
+#### Soft Auto ML - Hyperparam tuning
 - using automl to find the optimal set of hyperparams for a model within a given search space
 - has been shown that weaker models w well-tuned parameters can outperform stronger models 
 - utilities for auto hyperparam tuning: auto-sklearn, keras tune
@@ -226,26 +224,26 @@ the idea of using computation to solve chore tasks done by ml engineers
 
 indepth guide to hyperparam tuning [AutoML Book Ch1](https://www.automl.org/wp-content/uploads/2019/05/AutoML_Book_Chapter1.pdf)
 
-##### Hard Auto ML - Architecture Search and LEarned Optimizers
+#### Hard Auto ML - Architecture Search and LEarned Optimizers
 - used mainly in research
 - the architectures from architecture search research and the optimizers from learned optimizers research can be general enough to be used in many different tasks
 - architecture search (aka NAS) -> using an algo to change the architectural params of ur neural network (no/size oflayer) to find the optimal architecture for your model. 3 components: search space (depends on base architecture), performance estimation strategy (must be cheap), search strategy (reinforcement learniing/ evolutionary algos).
 - learned optimizers -> replacing the manually defined GD optimizer function and its hyperparams with a NN and learning its hyperparams. meta-train NNs using learning tasks as training data to come up w generalizable nn optimizer function that can be used off the shelf. some optimizers can [train themselves](https://www.youtube.com/watch?v=3baFTP0uYOc)
 
 
-#### Offline Evaluation - Baselines, Evaluation Methods
+### Offline Evaluation - Baselines, Evaluation Methods
 how to evaluate ur models for deployment
 baselines - need something to compare against
 evaluation methods - method beyond j ml metrics (may come from the business end). ideally u want the same eval methods in development and in production. u may be able to use natural labels to measure performance, if lucky. when matching evals not possible, u need to use extensive monitoring in prod
 
-##### Baselines
+#### Baselines
 - random baseline - generate a model that produces a pred following a specific random distribution (can be uniform distribution or the tasjs' label distribution)
 - simple heuristic - " makes pred using simple heuristics such as predict most popular, recommend by no of votes
 - zero rule baseline - always predict the most common class. if above 70% ur model needs to be much better in order to be justifiable
 - human baseline - use human performance/acc as baseline
 - existing solution
 
-###### eval methods 
+##### eval methods 
 need to ensure model robustness, fairness, calibration (beyond ml metrics like f1, acc)  
 
 robustness -> perturbation tests  
@@ -272,7 +270,7 @@ performance & fairness -> slicing
 - defining critical slices is more art than science. some techniques: heuristic based (domain knowledge), error analysis (finding patterns in misclassified examples)
 - after finding critical slices u need sufficient correctly labeled data for each slice to be able to do the slice-based eval tests
 
-#### Final Takeaways
+### Final Takeaways
 - start simple w ur ml models, helps w debugging aswell
 - pick a suitable model and identify tradeoffs early 
 - use ensembles when a small inc in performance may lead to large financial gain
@@ -282,24 +280,24 @@ performance & fairness -> slicing
 - models need to be evaluated outside of performance metrics for robustness, fairness and calibration
 - be mindful of how changing certain features changes ur outputs, and how ur model perform on diff slices of your data. 
 
-### DMLS CH7
+## DMLS CH7
 
 Model selected, trained, evaluated. Time to deploy.  
 
-#### Challenges of deploying to prod:
+### Challenges of deploying to prod:
 - making ur model available to a large no of users w 99% uptime and low latency
 - realizing when a model is failing in production
 - seamlessly pushing updates to fix bugs 
 
 exporting the model (eg. tf.keras.Model.save) is known as serialization. models have 2 parts that can be exported - model definition and model params, usually nboth are exported together
 
-##### Deployment Mythbusters
+#### Deployment Mythbusters
 - MANY models are used concurrently at medium to large companies, one model per application feature is common
 - ML systems suffer from "software rot", and get worse from data distribution shifts over time
 - Models need to be updated periodically, like once  month or once a quarter
 - ML engineers need to worry about scale, models need to provide several hundred inferences per second or deal with millions of users
 
-#### Serving Predictions
+### Serving Predictions
 1. Batch Prediction:  
     - Uses only batch features.
     - Runs a scheduled or triggered job to mass produce predictions and store them in a DB. At inference time, the pre-calculated prediction is looked up from the DB.
@@ -328,12 +326,12 @@ exporting the model (eg. tf.keras.Model.save) is known as serialization. models 
 
 Note for mode 3: Companies sometimes have separate data pipelines for batch data that gets used to build features for training, and for streaming data to calcualte features on the fly at inference time. This causes bugs in ML since changes in one pipeline do not get propagated to the other, leading to feature drift. There is a need to build infrastructure that unites the batch and streaming pipeline, by using feature stores or stream computing technology like Apache Flink.
 
-#### Ways to reduce inference latency 
+### Ways to reduce inference latency 
 1. Model Compression - make the model smaller
 2. Inference Optimization - tweak computation and compilation parameters to reduce inference latency
 3. Faster hardware - buy better shit or make ur shit run faster
 
-##### Model Compression
+#### Model Compression
 _(Note: compression also has ripple effects on fairness)_  
 4 common techniques for model compression:
 1. Low-rank factorization:
@@ -362,7 +360,7 @@ _(Note: compression also has ripple effects on fairness)_
     - Pros : existing libraries make all forms of quantization straightforwar to do. generalizes well to several models. low-precision training has started getting direct hardware support
     - Cons : less precision means fewer numbers can be represented, leading to risk of precision rounding errors and number boundary overflow. small rounding errors may lead to dramatic changes in performance.
 
-#### ML on the Cloud vs on the Edge
+### ML on the Cloud vs on the Edge
 Where should the main chunk of inference computation happen?  
 1. Cloud:
     - Pros: easy to deploy, no need to worry abt compatibility
@@ -372,7 +370,7 @@ Where should the main chunk of inference computation happen?
     - Pros: No internet needed, and no network latency. useful for sensitive data that you don't want to send over a network eg. fingerprints. edge computation makes iteasier to comply w privacy regulations
     - Cons: hardware compatibility becomes an issue. diff kinds of target hardware need models to be compiled and optimizede for them. The edge devices also need to be powerful enough, have enough memory and enough battery to run ur model. 
 
-##### Compiling and Optimizing Models for Edge Devices
+#### Compiling and Optimizing Models for Edge Devices
 Compilation is the process of transforming your ML model into an artefact that acan run in a target hardware.  
 - As an applied ML engineer, you typically use model compilers that are already created. 
 - Some compilers rely on intermediate representations (IRs) which are standardized intermediate formats that framework creators and hardware manufacturers have both adopted to ease the creation of compilers and alleviate the hardware support problem.
@@ -385,11 +383,11 @@ Optimization is the process of making tweaks to the model/artefact to take advan
     - Using ML for model optimization: ML can be used to saerch for an optimal operation order instead of relying on heuristics. This is better as it is closer to optimality and flexible to changes. 
 - As an applied ML engineer you optimize your model once for one hardware backend and then run it on multiple devices of that same hardware type. 
 
-##### ML in browsers
+#### ML in browsers
 if u can make ur model run well on a browser, u dont need to worry abt target hardware, compilation, optimization.
 You can use libraries to transform models into js browser runnable artefacts, but javascript is not weell suited for ML. so models typically get compiled into WebAssembly (WASM) which is much faster than js, but still slower compared to running models in their native hardware using android/ios apps
 
-#### Final Takeaways:
+### Final Takeaways:
 - challenges of deploying a model (serialization)
 - diff types of prediction modes - batch, online, streaming, hybrid batch/online, and their use cases
 - ways to reduce inference latency - model compression, inference optimization, faster hardware
@@ -398,13 +396,13 @@ You can use libraries to transform models into js browser runnable artefacts, bu
 - models must be compiled and optimized for various target hardware
 - in general if ur model can run well on a browser then u dont need to worry abt target hardware. 
 
-### DMLS CH8
+## DMLS CH8
 
 After deploying model to production, still needs to be monitored constantly to detect natural performance degradation that happens to all models over time
 
-#### How do ML systems fail
+### How do ML systems fail
 
-##### Software system failures
+#### Software system failures
 - Dependency failure : something u depend on breaks, and ur program breaks as a consequence
 - deployment failure: eg. deploying the wrong version of the ml artefact or a bug in the code surrounding the ml model
 - hardware failure: the infra fails and ur system fails with it
@@ -413,7 +411,7 @@ google survey -> 60 out of 96 ml system failures were software system failures
 most of the 60 were related to distributed system failure modes
 [extra source - reliable machine learning by todd underwood](https://www.oreilly.com/library/view/reliable-machine-learning/9781098106218/)
 
-##### ML-specific failures
+#### ML-specific failures
 examples:
 - data collection and processing problems
 - poor hyperparams
@@ -422,12 +420,12 @@ examples:
 - edge cases
 - degenerate feedback loops
 
-###### extreme data sample edge cases
+##### extreme data sample edge cases
 edge cases are data samples so extreme that the model makes a catastrophic mistake. in some cases, may prevent model from being deployed altogether (eg. self-driving cars) this is differnt from an outlier (an extreme data case that the model is able to handle). 
 
 removing outliers during training helps the model learn decision boundaries better but makes it less robust to extreme data samples at inference time
 
-###### degenrate feedback loops
+##### degenrate feedback loops
 a degenrate feedback loop happens when the predictions themselves influence the feedback given to the model (eg. if a resume model learns that a specific company's ex-employees have good performance then it will recommend those resumes to more recruiters. in the next iteration, it will see that those resumes have been recommended to more recruiters and compound the weight given to this feature, furhter biasing itself)
 
 this can only happen when the model is in prod and users are interacting with it. also known as exposure bias, popularity bias, filter bubbles, echo chambers etc. 
@@ -439,14 +437,14 @@ correcitng these deg feedback loops
 - method 2: positional features. if the position of a prediction infuences how likely it is to be clicked on, then u can teach ur model the influence of that position using pos features (diff from positional embeddings) positional features can be numeric (1,2,3) or boolean (eg. was this item the first prediction?...) 
 - method 3: contextual bandits. 
 
-#### Data distribution shifts - An ML-specific failure
+### Data distribution shifts - An ML-specific failure
 this is a type of ml-specific failure that is v hard to detect and act on  
 - source distribution: distribution of the training data
 - target distribution: distribution of the inference data in prod
 
 data distribution shifts refer to differences bw the source distribution and the target distribution. they are only a problem if they cause model performance to degrade, just because u have one doesnt mean u need to act on it
 
-##### Types
+#### Types
 in theory, lots of types. in practice, difficult to ascertain type and the way to address tends to be the same across types.  
 a model might have multiple types of shifts at the same time
 - covariate shift: P(X) is diff bw the source and target distributions but P(Y|X) styas the same, i.e. the distribution of the inputs change but the probability of a label given a specific input stays the same. eg. breast cancer training dataset mostly women over 40, target distribution is general population, P(X=women over 40) is diff in source and target, but P(Y=breast cancer|X=women over 40) is the same. can be caused at training time by sampling bias, or due to augmented training data or active learning. can also happen if the target distribution is affected eg. new demographic of users when launching in a new country
@@ -454,7 +452,7 @@ a model might have multiple types of shifts at the same time
 - concept drift/posterior shift: P(Y|X) changes but P(X) remains the same. eg. u trained an apt price estimator using pre-covid data, it would suffer from concept drift because the same apartments P(X=apartment features) will be valued at very different prices post-covid. sometimes, these are cyclic/seasonal, eg. ride share prices fluctuate on weekdays vs weekends. companies might have diff models trained on diff seasonality data (eg. model for weekends vs model for weekdays)
 - label schema change: happens in classification tasks, when ur model was trained to output N amount of classes and ur business reqs change and now u need to predict N+M classes. common with high cardinality data classification problems. happens in regression when the range of the output variable changes.
 
-##### Detecting these shifts
+#### Detecting these shifts
 - accuracy related metrics (eg. F1, recall, roc-auc etc.) ideal if u have access to natural labels. if there is a big diff bw accuracy calculated during training and production (or if prod acc changes a lot over time) then there may be a data shift problem.  
 - statistical methods: monitoring the input ditribution P(X), the actual lavel distribution P(Y), and the conditional distributions P(X|Y) and P(Y|X). however, in practice u need ground truth labels to monitor anything to do with Y, and if u had ground truth labels then it'd be better to monitor using accuracy related metrics. So, in practice, if you dont have ground truth labels then you monitor the input distribution P(X) and the prediction distribution P(Y_hat) to detect shifts. 
 - simple descriptive stats: simple. good start. to figure out if the source and target distributions ahve shifted, calculate desc stats (min,max,mean,skewness,kurtosis,variance,etc.) for the training set AND the seen production data. if there is a big difference, there is a chance of a distribution shift. however, similar results does NOT mean u can guarantee that there has been no shift.
@@ -466,15 +464,15 @@ a model might have multiple types of shifts at the same time
     - speed of detection vs reliability of test: this is a trade-off. shorter time windows = faster at detecting shifts, but also might result in more false alarms. 
     - accumulating vs sliding time windows: accumulating time windows keep adding data to the prod data set to test as time progresses without discarding any of the old data. sliding time wnidows discard the data that has fallen outside the time window. accumulating windows are more reliable to test since htey have more data, but the tests that run on them may be less reactive to sudden changes as old data would obscure recent characteristics. 
 
-##### Addressing the shifts
+#### Addressing the shifts
 
-###### Minimizing model sensitivity to shifts
+##### Minimizing model sensitivity to shifts
 Data distribution shifts are inevitable. However, there are some things you can do to make your model less sensitive to shifts:
 - Training using large datasets: in the hope that using a massive dataset means your model will learn such a comprehensive distribution that it can cover whatever data points it encounters in production. more common in research than in industry 
 - Trade-off bw performance and stability: Selecting features -> some are more prone to distribution change, choosing ones that are more stable and robust against changes (even tho they may be less nuanced) can reduce sensitivity to shifts
 - Separate models for fast-moving markets and slow-moving markets: if u have to build a regression model for housing prices in all of US, then you will see that some states like SF and NY ahve much more rapid price changes than the rest of the country. creating independent models for htese cities separates the fast markets from your main model and reduces the need to constantly retraining your main model. additionally, ur fast market models can keep up to date with more frequent re-trainings. 
 
-###### Correcting shifts after the deployment
+##### Correcting shifts after the deployment
 - Periodic retraining of models: Most common strategy (more in ch9). models get re-trained after a specific period (monthly, weekly, daily). Some considerations: 
     - Optimal training frequency is important to consider using experimental data instead of just picking one arbitrarily. 
     - Retraining from scratch (aka stateless retraining) vs continue training from the last checkpoint (aka stateful retraining/fine-tuning)
@@ -483,16 +481,16 @@ Data distribution shifts are inevitable. However, there are some things you can 
     - Zhang et al (2013): causal interpretations together with kernel embedding of conditional and marginal distributions to correct models’ predictions for both covariate shifts and label shifts without using labels from the target distribution.
     - Zhao et al (2020): an unsupervised domain adaption technique that can learn data representations that are invariant to changing distributions.    
 
-#### Monitoring & Observability 
+### Monitoring & Observability 
 Monitoring: putting trackers, logs, metrics etc. in place to help determine WHEN something goes wrong.  
 Observability: tools and setup that allow you to figure out WHAT went wrong by observing the inner workings of ur system
 
-##### Software related metrics
+#### Software related metrics
 All standard software observability practices also apply to ML systems. Things you want to track:
 - operational metrics: network metrics (latency, load), machine health metrics (cpu/gpu, memory utils), application metrics (endpoint load, request success rate, endpoint latency)
 - When coming up SLOs or SLAs that ensure availability, you need to define what "up" means in "the system must be up 99% of the time". eg. "up" may mean median latency <= 200ms and p99<=2s. then u can measure the amt of time in a month that ur system did not comply with this restriction to calc uptime percentage
 
-##### ML-related metrics
+#### ML-related metrics
 System may work, but predictions can still be garbage.  
 Usually there are 4 things/levels you want to monitor: Accuracy, Predictions, Features, Raw Inputs.  
 ![monitoring_4lvls](image-4.png)  
@@ -512,7 +510,7 @@ Model interpretability is important since you need to know how your model works 
     - raw inputs may be in formats that are hard to work with eg. large assets/ img/video/audio files in different formats or maybe encrypted data
     - ml engineers may not have access to the raw inputs for privacy reasons and instead have to query it from a data warehouse where the data is already partially processed.
 
-##### Monitoring toolbox
+#### Monitoring toolbox
 From an implementation perspective, the pillars of monitoring are: metrics, logs and traces.
 From a user-monitoring perspective: logs, dashboards and alerts
 
