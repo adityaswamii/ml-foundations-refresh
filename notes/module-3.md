@@ -505,11 +505,31 @@ Model interpretability is important since you need to know how your model works 
 - monitoring predictions: this is the most common artefact that companies monitor. easy to capture, easy to visualize, and have low dimensionality -> summary stats also easy to calculate and interpret. 
     - for distribution shifts: if ur model's weights have not changed but the prediction distribution has then that generally indiciates a change in the underlying input distribution. since predictions are low dimensional, it is easy to conduct two-sample tests to assess distribution changes. 
     - for anomalies: if ur predictionshave rapid changes in behaviour like suddenly predicting false for 10mins straight, then you may be having an ml incident. monitoring prediction for anomalies is much more instant than monitoring accuracy for anomalies, since natural labels take much longer to become available.
-- monitoring features: 
-
+- monitoring features: more appealing than monitoring raw input data since the features have schemas and the information is slightly more workable (eg. derived features from an image vs the actual image)
+    - things you can monitor in your features: that they follow the expected schema, satisfying a regex or belonging to a predefined set. that min/max/median are within acceptable ranges. that value of feature A is always greater than feature B. Libraries that are useful for this -> Great Expectations, Deequ
+    - Challenges: you may have hundreds of models each with hundreds of features, lots of metrics. more useul for debugging than for detection since added automated drift alerts to all features will cause a lot of false positives. can be a multistep process (eg. Snowflake>pandas>numpy) making it more diff to choose what to monitor. also, feature schema may change over time, requiring u to update ur expectation monitors. 
+- monitoring raw inputs: this is the purest version of your input, and in theory should allow you to tell if your input distribution has really changed or a bug has been introduced downstream. however, this is rlly tough and sometimes impossible.
+    - raw inputs may be in formats that are hard to work with eg. large assets/ img/video/audio files in different formats or maybe encrypted data
+    - ml engineers may not have access to the raw inputs for privacy reasons and instead have to query it from a data warehouse where the data is already partially processed.
 
 ##### Monitoring toolbox
+From an implementation perspective, the pillars of monitoring are: metrics, logs and traces.
+From a user-monitoring perspective: logs, dashboards and alerts
 
+- Logs and distributed tracing:
+    - if u have a distributed system then make sure ur logs have diistributeed tracing
+    - record all event metadata with logs (when it happens, what service it happens in, the function that was called, the user associated etc.) log tagging is ur friend
+    - analysing billions of logs is futile, companies use ML to do large-scale analysis of logs
+- Dashboards:
+    - they show useful visualizations of metrics that are critical for monitoring 
+    - makes monitoring accessible to non-technical ppl 
+    - excessive metrics in a dashboard is counter-productive (aka dashboard rot). be picky on the metrics that u want in the dashboard and abstract out lower-level metrics by computing higher level ones
+- Alerts: 
+    - alert -> automatic warning that is sent to a notification channel when a particular alert policy is violated
+    - alert policy -> the condition that needs to be breached to trigger the alert and the severity associated to that breach
+    - notification channels -> who needs to be notified? (email/ slack channel etc.)
+    - description of alert -> the person the receiving the alert should be pointed to a runbook that contains what to do
+    - alert fatigue -> too many alerts desensitizes people and critical ones might be ignored. only create alerts that are actionable. only alert ppl out of office if the consequences of the alert cannot wait until the next working day. 
 
 
 
