@@ -398,7 +398,117 @@ You can use libraries to transform models into js browser runnable artefacts, bu
 - models must be compiled and optimized for various target hardware
 - in general if ur model can run well on a browser then u dont need to worry abt target hardware. 
 
+### DMLS CH8
 
+After deploying model to production, still needs to be monitored constantly to detect natural performance degradation that happens to all models over time
+
+#### How do ML systems fail
+
+##### Software system failures
+- Dependency failure : something u depend on breaks, and ur program breaks as a consequence
+- deployment failure: eg. deploying the wrong version of the ml artefact or a bug in the code surrounding the ml model
+- hardware failure: the infra fails and ur system fails with it
+
+google survey -> 60 out of 96 ml system failures were software system failures 
+most of the 60 were related to distributed system failure modes
+[extra source - reliable machine learning by todd underwood](https://www.oreilly.com/library/view/reliable-machine-learning/9781098106218/)
+
+##### ML-specific failures
+examples:
+- data collection and processing problems
+- poor hyperparams
+- changes in training/inference pipeline not replicated on the other one
+- data distribution shifts 
+- edge cases
+- degenerate feedback loops
+
+###### extreme data sample edge cases
+edge cases are data samples so extreme that the model makes a catastrophic mistake. in some cases, may prevent model from being deployed altogether (eg. self-driving cars) this is differnt from an outlier (an extreme data case that the model is able to handle). 
+
+removing outliers during training helps the model learn decision boundaries better but makes it less robust to extreme data samples at inference time
+
+###### degenrate feedback loops
+a degenrate feedback loop happens when the predictions themselves influence the feedback given to the model (eg. if a resume model learns that a specific company's ex-employees have good performance then it will recommend those resumes to more recruiters. in the next iteration, it will see that those resumes have been recommended to more recruiters and compound the weight given to this feature, furhter biasing itself)
+
+this can only happen when the model is in prod and users are interacting with it. also known as exposure bias, popularity bias, filter bubbles, echo chambers etc. 
+
+detecting these loops requires measuring the model's output diversity -> aggregate diversity and avg coverage of long tail items, hit rate against popularity (measure predictino acc for diff popularity buckets, if a recommendation system is better at recommending popular items than less popular ones it is suffering from pop bias), doing feature importance studies to detect if a model is baising itself over time
+
+correcitng these deg feedback loops 
+- method 1: randomization. introducing randomization to model outputs reduces homogeneity eg. showing the user random items alongside the model recommended ones to determine the true quality. randomization improves diversity at the expense of user experience. 
+- method 2: positional features. if the position of a prediction infuences how likely it is to be clicked on, then u can teach ur model the influence of that position using pos features (diff from positional embeddings) positional features can be numeric (1,2,3) or boolean (eg. was this item the first prediction?...) 
+- method 3: contextual bandits. 
+
+#### Data distribution shifts - An ML-specific failure
+this is a type of ml-specific failure that is v hard to detect and act on  
+- source distribution: distribution of the training data
+- target distribution: distribution of the inference data in prod
+
+data distribution shifts refer to differences bw the source distribution and the target distribution. they are only a problem if they cause model performance to degrade, just because u have one doesnt mean u need to act on it
+
+##### Types
+in theory, lots of types. in practice, difficult to ascertain type and the way to address tends to be the same across types.  
+a model might have multiple types of shifts at the same time
+- covariate shift: P(X) is diff bw the source and target distributions but P(Y|X) styas the same, i.e. the distribution of the inputs change but the probability of a label given a specific input stays the same. eg. breast cancer training dataset mostly women over 40, target distribution is general population, P(X=women over 40) is diff in source and target, but P(Y=breast cancer|X=women over 40) is the same. can be caused at training time by sampling bias, or due to augmented training data or active learning. can also happen if the target distribution is affected eg. new demographic of users when launching in a new country
+- label shift/prior prob shift/target shift: P(Y) is diff bw the source and target distriubtions but P(X|Y) remains the same. eg. P(Y=has breast cancer) is different but P(X=is over 40|Y=has breast cancer) is the same in both distributions. covariate shifts can also cause some label shifts. 
+- concept drift/posterior shift: P(Y|X) changes but P(X) remains the same. eg. u trained an apt price estimator using pre-covid data, it would suffer from concept drift because the same apartments P(X=apartment features) will be valued at very different prices post-covid. sometimes, these are cyclic/seasonal, eg. ride share prices fluctuate on weekdays vs weekends. companies might have diff models trained on diff seasonality data (eg. model for weekends vs model for weekdays)
+- label schema change: happens in classification tasks, when ur model was trained to output N amount of classes and ur business reqs change and now u need to predict N+M classes. common with high cardinality data classification problems. happens in regression when the range of the output variable changes.
+
+##### Detecting these shifts
+- accuracy related metrics (eg. F1, recall, roc-auc etc.) ideal if u have access to natural labels. if there is a big diff bw accuracy calculated during training and production (or if prod acc changes a lot over time) then there may be a data shift problem.  
+- statistical methods: monitoring the input ditribution P(X), the actual lavel distribution P(Y), and the conditional distributions P(X|Y) and P(Y|X). however, in practice u need ground truth labels to monitor anything to do with Y, and if u had ground truth labels then it'd be better to monitor using accuracy related metrics. So, in practice, if you dont have ground truth labels then you monitor the input distribution P(X) and the prediction distribution P(Y_hat) to detect shifts. 
+- simple descriptive stats: simple. good start. to figure out if the source and target distributions ahve shifted, calculate desc stats (min,max,mean,skewness,kurtosis,variance,etc.) for the training set AND the seen production data. if there is a big difference, there is a chance of a distribution shift. however, similar results does NOT mean u can guarantee that there has been no shift.
+- hypothesis tests: more sophisticated. use statistical tests designed to test whether the diff between two populates is statistically significant. note that the existence of statistical differences does not mean the diff are imp. the shifts only become problematic when they hurt your performance. if u can detect the shift using a small sample, then the difference is serious. if it takes a huge amt of data to be able to detect the shift, then the diff is possibly v small and not worth worrying about. 2-sample tests work better on low dim data so it is v highly recommended to reduce dimensionality before running tests. [Alibi Detect](https://github.com/SeldonIO/alibi-detect) is an open source python package w many implemntations of drift detection algos, eg. Kolmogorov-Smirnov test:
+    - it is good because it does not req any parameters of the underlying distributions to work and does not make any assumptions abt the underlying distributions so it works for any distribution. 
+    - it won't work for high dim data 
+- also need to consider the time window. when comparing ur source and target distributions, you will need to make a choice of the time window you will use to get the prod data to run tests. 
+    - seasonality: if ur data has a natural weekly cycle and ur training data contains multiple weeks then choosing a prod time window that is less than a week could result in weird results.
+    - speed of detection vs reliability of test: this is a trade-off. shorter time windows = faster at detecting shifts, but also might result in more false alarms. 
+    - accumulating vs sliding time windows: accumulating time windows keep adding data to the prod data set to test as time progresses without discarding any of the old data. sliding time wnidows discard the data that has fallen outside the time window. accumulating windows are more reliable to test since htey have more data, but the tests that run on them may be less reactive to sudden changes as old data would obscure recent characteristics. 
+
+##### Addressing the shifts
+
+###### Minimizing model sensitivity to shifts
+Data distribution shifts are inevitable. However, there are some things you can do to make your model less sensitive to shifts:
+- Training using large datasets: in the hope that using a massive dataset means your model will learn such a comprehensive distribution that it can cover whatever data points it encounters in production. more common in research than in industry 
+- Trade-off bw performance and stability: Selecting features -> some are more prone to distribution change, choosing ones that are more stable and robust against changes (even tho they may be less nuanced) can reduce sensitivity to shifts
+- Separate models for fast-moving markets and slow-moving markets: if u have to build a regression model for housing prices in all of US, then you will see that some states like SF and NY ahve much more rapid price changes than the rest of the country. creating independent models for htese cities separates the fast markets from your main model and reduces the need to constantly retraining your main model. additionally, ur fast market models can keep up to date with more frequent re-trainings. 
+
+###### Correcting shifts after the deployment
+- Periodic retraining of models: Most common strategy (more in ch9). models get re-trained after a specific period (monthly, weekly, daily). Some considerations: 
+    - Optimal training frequency is important to consider using experimental data instead of just picking one arbitrarily. 
+    - Retraining from scratch (aka stateless retraining) vs continue training from the last checkpoint (aka stateful retraining/fine-tuning)
+    - which data to include in the retraining (eg. last 24hrs, last 6 months, data from the point the shift started?)
+- Adapt a trained model to a target distribution without needing new labels: Less common in indusrty and research. Two examples briefly mentioned:
+    - Zhang et al (2013): causal interpretations together with kernel embedding of conditional and marginal distributions to correct models’ predictions for both covariate shifts and label shifts without using labels from the target distribution.
+    - Zhao et al (2020): an unsupervised domain adaption technique that can learn data representations that are invariant to changing distributions.    
+
+#### Monitoring & Observability 
+Monitoring: putting trackers, logs, metrics etc. in place to help determine WHEN something goes wrong.  
+Observability: tools and setup that allow you to figure out WHAT went wrong by observing the inner workings of ur system
+
+##### Software related metrics
+All standard software observability practices also apply to ML systems. Things you want to track:
+- operational metrics: network metrics (latency, load), machine health metrics (cpu/gpu, memory utils), application metrics (endpoint load, request success rate, endpoint latency)
+- When coming up SLOs or SLAs that ensure availability, you need to define what "up" means in "the system must be up 99% of the time". eg. "up" may mean median latency <= 200ms and p99<=2s. then u can measure the amt of time in a month that ur system did not comply with this restriction to calc uptime percentage
+
+##### ML-related metrics
+System may work, but predictions can still be garbage.  
+Usually there are 4 things/levels you want to monitor: Accuracy, Predictions, Features, Raw Inputs.  
+![monitoring_4lvls](image-4.png)  
+Higher level metrics like accuracy are easier to understand and relate w business lvl metrics, however they are the culmination of a lot of complex transformations so it doesnt necessarily tell us why something is wrong. Lower level metrics like raw input monitoring are far removed from the business end and harder to setup, but if a specific raw input is wrong then u immediately know what the problem is.  
+Model interpretability is important since you need to know how your model works and which features contribute the most to ur predictions in order to identify what went wrong when fixing anomalies.  
+- Monitoring accuracy related metrics: this is the most powerful and practical way of monitoring data distribution shifts. not always possible to do, relies on having natural labels (or some weaker proxy of natural labels)
+    - if ur system receives any type of user feedback for its predictions, then track it (click, hide, purchase, upvote, downvote, favorite, bookmark, share etc.). even if it cannot be used to directly infer natural labels, it can be used to detect changes in your model's performance. 
+    - also track second order effects, eg. if the clickthru rate of ur recoms is the same but the completion rate drops then there is a problem. 
+    - try to engineer systems in a way that they collect user feedback 
+- monitoring predictions: this is the most common artefact that companies monitor. easy to capture, easy to visualize, and have low dimensionality -> summary stats also easy to calculate and interpret. 
+    - for distribution shifts: if ur model's weights have not changed but the prediction distribution has then that generally indiciates a change in the underlying input distribution. since predictions are low dimensional, it is easy to conduct two-sample tests to assess distribution changes. 
+    - for anomalies: if ur predictionshave rapid changes in behaviour like suddenly predicting false for 10mins straight, then you may be having an ml incident. monitoring prediction for anomalies is much more instant than monitoring accuracy for anomalies, since natural labels take much longer to become available.
+- monitoring features: 
+
+
+##### Monitoring toolbox
 
 
 
