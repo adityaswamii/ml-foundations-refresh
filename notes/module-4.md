@@ -8,3 +8,11 @@
 # 📝 Study Scratchpad
 
 ## RAG 
+
+### Limitations of foundation models:
+- Knowledge cutoffs 
+- 
+
+### What is RAG 
+
+### How does RAG work 
