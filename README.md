@@ -190,8 +190,10 @@ A granular tracker bridging university-level data science foundations with produ
 | **Day 4** | Module 2 Statistics and Probability |  
 | **Day 5** | Module 3 Classical ML |  
 | **Day 6** | Module 3 Time series — components, stationarity, ACF/PACF, ARIMA, Prophet → LSTM autoencoder project |  
-| **Day 7** | Module 4 Transformer architecture, fine-tuning strategies (LoRA, QLoRA) |  
+| **Day 7** | Module 3 wrap up |  
 | **Day 8** | Module 4 RAG pipelines, agents & orchestration, safety & evaluation |  
+| **Day 9** | Module 4 Langchain Academy -> Intro to LangChain - Python |
+| **Day 9** | Module 4 Langchain Academy -> Intro to LangGraph - Python |
 
 <!-- > Production ML is Day 1 because it reframes everything that follows. Understanding how models are deployed, monitored, and maintained in the real world changes how you read every algorithm and technique in Modules 1–4. -->
 
@@ -292,11 +294,11 @@ A granular tracker bridging university-level data science foundations with produ
 ### Day 9: 30/06
 * **Focus:**
   rag 
-  langchain
+  langchain  
 * **Completed Micro-topics:**
-  
+  rag pinecone handbook, rag from scratch videos 1-4
 * **Blockers/Insights encountered:**
-
+  might need to create new repositories for langchain academy courses later 
 ---
 
 ### Wrap-up: 
