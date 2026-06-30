@@ -4,21 +4,17 @@ A granular tracker bridging university-level data science foundations with produ
 
 ---
 
-## 📊 Sprint Overview
-* **Start Date:** June 18, 2026
-* **Target Completion:** June 28, 2026
-
-### 🚦 Progress Matrix
-| Module / Phase | Hours Allocated | Status | Last Reviewed |
-| :--- | :---: | :---: | :--- |
-| **Module 1:** SQL & Relational Analytics | 8h | 🟫 In Progress | June 23, 2026 |
-| **Module 2:** Statistics & Data Manipulation | 8h | ✅ Completed | June 22, 2026 |
-| **Module 3:** Classical ML & Time Series | 30h | 🟫 In Progress | June 24, 2026 |
-| **Module 4:** Generative AI & LLM Systems | 24h | ⬜ Not Started | — |
+### 📊 Progress Matrix
+| Module / Phase | Status | Last Reviewed |
+| :--- | :---: | :--- |
+| **Module 1:** SQL & Relational Analytics | 🟫 In Progress | June 25, 2026 |
+| **Module 2:** Statistics & Data Manipulation | ✅ Completed | June 22, 2026 |
+| **Module 3:** Classical ML & Time Series | 🟫 In Progress | June 29, 2026 |
+| **Module 4:** Generative AI & LLM Systems | 🟫 In Progress | June 30, 2026 |
 
 ---
 
-## 🗺️ Master ML Tracker
+## 🗺️ Tracker
 
 <!--*Legend: ⬜ Not Started | 🟡 Needs Review | ✅ Completed & Mastered*-->
 
@@ -178,8 +174,9 @@ A granular tracker bridging university-level data science foundations with produ
 | Transformer intuition | [3Blue1Brown — Attention in Transformers](https://www.youtube.com/watch?v=eMlx5fFNoYc) |
 | RAG pipelines | [Pinecone — RAG Guide](https://www.pinecone.io/learn/retrieval-augmented-generation/) |
 | LoRA & QLoRA | [Sebastian Raschka — LoRA explained](https://sebastianraschka.com/blog/2023/llm-finetuning-lora.html) |
-| LangChain agents | [LangChain — Quickstart](https://python.langchain.com/docs/get_started/quickstart) |
+| Introduction to LangChain - Python | [LangChain Academy](https://academy.langchain.com/courses/foundation-introduction-to-langchain-python) |
 | RAG evaluation | [RAGAS](https://docs.ragas.io/en/latest/) |
+| RAG From Scratch | [Youtube Playlist - Langchain](https://www.youtube.com/playlist?list=PLfaIDFEXuae2LXbO1_PKyVJiQ23ZztA0x) |
 
 ---
 
@@ -287,7 +284,17 @@ A granular tracker bridging university-level data science foundations with produ
   refresh ml topics
   rag
 * **Completed Micro-topics:**
-  ch8 finished. classical ml topics revised.
+  ch8 finished. classical ml topics revised. 
+* **Blockers/Insights encountered:**
+
+---
+
+### Day 9: 30/06
+* **Focus:**
+  rag 
+  langchain
+* **Completed Micro-topics:**
+  
 * **Blockers/Insights encountered:**
 
 ---
