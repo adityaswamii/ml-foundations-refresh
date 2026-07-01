@@ -301,6 +301,16 @@ A granular tracker bridging university-level data science foundations with produ
   might need to create new repositories for langchain academy courses later 
 ---
 
+### Day 10: 01/07
+* **Focus:**
+  rag from scratch 
+* **Completed Micro-topics:**
+  rag from scratch videos 5- 
+  tested out concept implementations in jupyter notebooks
+* **Blockers/Insights encountered:**
+
+---
+
 ### Wrap-up: 
 * **Modules completed:**
 
