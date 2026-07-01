@@ -101,6 +101,25 @@ Agentic RAG -> Deciding which questions to ask, which tools to use, when to use 
 ![agentic rag](image-6.png)  
 The LLM is the agent and decides which retrieval tools to use and when and how to query those tools
 
+## RAG from Scratch 
+
+### Query Translation 
+Semantic search can hallucinate/become vague when user queries are subpar.  
+Query translation -> translating the user prompt in some way to get better results   
+3 ways/levels of abstraction:
+- rewriting (multi query, rag fusion)
+- decomposition -> making a user prompt less abstract by breaking it down into subquestions and solving smaller problems
+- making a user prompt more abstract, asking a higher level question as a subcondition to answer the user question (step-back prompting)
+
+#### Rewriting
+- Multi Query:  
+    the concept of multi query is to generate multiple different versions of the original user's prompt, in a way that covers different perspectives and is useful for similarity based distance search. We perform retrieval from the vector DB for each of the 5 different versions, and then a unique union of all the retrieved documents is used to augment the final generation prompt. 
+- RAG Fusion:  
+    similar to multi query in that you generate multiple diff versions fo the original prompt. the diff is that we apply a ranking step to the retrieved documents, called reciprocal rank fusion (RRF Formula: 1 / (rank + k), where k is an optional parameter)
+
+#### Decomposition
+
+
 ## Langchain Academy - Intro to Langchain
 
 agentic -> ability to take actions autonomously
